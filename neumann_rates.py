@@ -91,16 +91,6 @@ class secure_key_rates:
                     # there's a factor 1/2 here usually but not according to eq.B13
         return result
     
-    def __heralding__(self, x):
-        singlesA = 0
-        singlesB = 0
-        for k in range(self.d):
-            # singles
-            singlesA += x[1] * self.__total_efficiency__(self.efficiencies_A[k], x[1], self.t_dead_A[k]) + self.dark_counts_A[k]
-            singlesB += x[1] * self.__total_efficiency__(self.efficiencies_B[k], x[1], self.t_dead_B[k]) + self.dark_counts_B[k]
-
-        return self.__coincidences_measured__(x) / np.sqrt(singlesA*singlesB)
-
     def __binary_entropy__(self, x):
         '''x is a value between 0 and 1'''
         return -x * np.log2(x) - (1 - x) * np.log2(1 - x)
@@ -152,31 +142,3 @@ class secure_key_rates:
         result = minimize(
             obj, [1, B0], bounds=[(0.001, 100), (1e-5, 1e3)])
         return [result.x[0]*self.timing_imprecision[0], result.x[1]*1e9], -result.fun
-
-    def optimize_tcc_given_B(self, B):
-        """rescaling the params to ease the optimization."""
-        def obj(x): return self.__objective__(
-            [x*self.timing_imprecision[0], B])
-        result = minimize(obj, [1], bounds=[(0.001, 100)])
-        return result.x*self.timing_imprecision[0], -result.fun
-    
-    def optimize_B_given_tcc(self, tcc, eff_A, eff_B,B0=1):
-        """rescaling the params to ease the optimization."""
-        if isinstance(eff_A, float) or isinstance(eff_A, int):
-            self.efficiencies_A = eff_A * np.ones(self.d)
-        else:
-            self.efficiencies_A = eff_A
-        if isinstance(eff_B, float) or isinstance(eff_B, int):
-            self.efficiencies_B = eff_B * np.ones(self.d)
-        else:
-            self.efficiencies_B = eff_B
-        if self.loss_format == 'dB':
-            self.__dB_to_loss__()
-        self.efficiencies_B /= self.d 
-        self.efficiencies_A /= self.d 
-
-        def obj(x): return self.__objective__(
-            [tcc, x*1e9])
-        result = minimize(
-            obj, [B0], bounds=[ (1e-5, 1e3)])
-        return result.x[0]*1e9, -result.fun

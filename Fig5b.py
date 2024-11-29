@@ -36,9 +36,9 @@ ax.xaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
 ax.yaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
 ax.zaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
 # make the grid lines transparent
-ax.xaxis._axinfo["grid"]['color'] =  (1,1,1,0)
-ax.yaxis._axinfo["grid"]['color'] =  (1,1,1,0)
-ax.zaxis._axinfo["grid"]['color'] =  (1,1,1,0)
+# ax.xaxis._axinfo["grid"]['color'] =  (1,1,1,0)
+# ax.yaxis._axinfo["grid"]['color'] =  (1,1,1,0)
+# ax.zaxis._axinfo["grid"]['color'] =  (1,1,1,0)
 maxes = np.array(maxes)
 # maxes = maxes[np.argsort(maxes[:,0])]
 ax.scatter(*maxes.T,c="green",depthshade=False)
