@@ -28,7 +28,7 @@ for i,file in enumerate(files):
         maxes += [[losses[0],tcc[np.argmax(rates)], np.max(rates)]]
 
         our_trace += [[losses[0],400, rates[np.where(tcc==400)[0][0]]]]
-ax.set_ylabel(r"$T_{cc}$ (ps)")
+ax.set_ylabel(r"$t_{CC}$ (ps)")
 ax.set_xlabel("Loss (dB)")
 ax.set_zlabel("Secret key rate (bits/s)")
 # make the panes transparent
