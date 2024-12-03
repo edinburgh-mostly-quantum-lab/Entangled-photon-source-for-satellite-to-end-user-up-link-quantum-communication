@@ -24,12 +24,6 @@ def plot_model(params, powers, loss_range,t_delta=0.5e-9,DC_A=100, DC_B=80, t_de
         qx = [] 
         for loss in losses:
             akr += [setup.custom_performance(tcc=Tcc, B=Brightness*power,eff_A=intrinsic_heralding_1550, eff_B=intrinsic_heralding_780+loss)]
-            x = [Tcc,Brightness*power]
-            meas_cc += [setup.__coincidences_measured__(x)]
-            heralding += [setup.__heralding__(x)]
-            qber += [setup.__coincidences_erroneous__(x, setup.bit_error) / meas_cc[-1]]
-            qx += [setup.__coincidences_erroneous__(x, setup.phase_error) / meas_cc[-1]]
-        
         
         return akr
 
@@ -59,32 +53,34 @@ if __name__ == '__main__':
 
     # We extracted the loss profile from figure 2 in https://doi.org/10.1038/nature23675 and fitted a function to it.
     time = np.linspace(0,360,360)
-    loss_behaviour = lambda x,freq,a,b,c,d: a*np.log10(b**2+c**2-2*b*c*np.cos(freq*(x-d))) -3
+    loss_behaviour = lambda x,freq,a,b,c,d: a*np.log10(b**2+c**2-2*b*c*np.cos(freq*(x-d))) - 8.9
     loss_overpass = partial(loss_behaviour,freq=-8.13786355e-05,  a=1.26519905e+01,  b=6.57313691e+03,  c=6.52804180e+03,d=1.82135169e+02)
     axloss = ax.twinx()
-    axloss.plot(time,loss_overpass(time),'-', color='black')
+    axloss.plot(time,loss_overpass(time),'--', color='black')
     axloss.set_ylabel('Loss (dB)', color='black')
 
     # 0km
     run_name = 'datarun_02_07_24'
     # the following parameters are obtained by matching to the results in file datarun_02_07_24
-    params = [7.761328918344407, 7.542259886343475, 0.0335677812551474, 0.02531375770896907, 10826895.017621633, 4e-10]
-    akr=plot_model(params, powers=[5], loss_range=loss_overpass(time),t_delta=0.5e-9,DC_A=200, DC_B=120, t_dead_A=25e-9, t_dead_B=45e-9)
-    ax.plot(time,akr,color="darkblue")
+    # params = [7.761328918344407, 7.542259886343475, 0.0335677812551474, 0.02531375770896907, 10826895.017621633, 4e-10]
+    params = [9.47893858965945,9.89101987420694, 0.037228590019520497, 0.03834132110856429, 12135831.8248959305, 4e-010]
+    akr=np.array(plot_model(params, powers=[5], loss_range=loss_overpass(time),t_delta=0.3e-9,DC_A=200, DC_B=70, t_dead_A=25e-9, t_dead_B=45e-9))
+    ax.plot(time[np.where(akr>=0)],akr[np.where(akr>=0)],color="darkblue")
     datapoints,yerr = plot_data(run_name,loss_overpass(time), 5, time)
-    ax.scatter(time[np.where(datapoints!=0)], datapoints[np.where(datapoints!=0)], s=4,marker='o',  color="darkblue")
+    ax.scatter(time[np.where(datapoints>0)], datapoints[np.where(datapoints>0)], s=4,marker='o',  color="darkblue")
 
     # 10km
     run_name = 'datarun_17_07_24'
     # the following parameters are obtained by matching to the results in file datarun_17_07_24
-    params = [9.47893858965945,9.89101987420694, 0.037228590019520497, 0.03834132110856429, 6135831.8248959305, 1e-09]
-    akr=plot_model(params, powers=[5], loss_range=loss_overpass(time),t_delta=0.4e-9,DC_A=200, DC_B=70, t_dead_A=25e-9, t_dead_B=45e-9)
-    ax.plot(time,akr,color="Purple")
+    #intrinsic_heralding_1550, intrinsic_heralding_780, qber, qx, Brightness, Tcc
+    # params = [9.47893858965945,9.89101987420694, 0.037228590019520497, 0.03834132110856429, 6135831.8248959305, 1e-09]
+    params = [9.47893858965945,9.89101987420694, 0.037228590019520497, 0.03834132110856429, 12135831.8248959305, 1e-09]
+    akr=np.array(plot_model(params, powers=[5], loss_range=loss_overpass(time),t_delta=0.4e-9,DC_A=200, DC_B=70, t_dead_A=25e-9, t_dead_B=45e-9))
+    ax.plot(time[np.where(akr>=0)],akr[np.where(akr>=0)],color="lightblue")
     datapoints,yerr = plot_data(run_name,loss_overpass(time), 5, time)
-    ax.scatter(time[np.where(datapoints!=0)], datapoints[np.where(datapoints!=0)], s=4,marker='o',  color="Purple")
+    ax.scatter(time[np.where(datapoints>0)], datapoints[np.where(datapoints>0)], s=4,marker='o',  color="lightblue")
 
     ax.set_xlabel('Time (s)',fontsize=10)
     ax.set_ylabel('Secret key rate (bits/s)',fontsize=10)#,color='blue')
     plt.tight_layout()
     plt.show()
-
