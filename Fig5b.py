@@ -50,3 +50,8 @@ ax.scatter(*our_trace.T,c="black",depthshade=False)
 ax.set_box_aspect(aspect=None, zoom=0.8)
 ax.view_init(30, -27) 
 plt.show()
+plt.savefig(
+        f'{__file__.split('.')[0]}.png',
+        dpi='figure',
+        bbox_inches='tight'
+    )
