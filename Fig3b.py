@@ -108,9 +108,9 @@ if __name__ == '__main__':
     ax.legend(fontsize=10, loc=(0.015,0.03), frameon=False)
     ax.set_xlabel('Loss (dB)',fontsize=10)
     ax.set_ylabel('SKR (bits/s)',fontsize=10)
-    plt.show()
     plt.savefig(
         f'{__file__.split('.')[0]}.png',
         dpi='figure',
         bbox_inches='tight'
     )
+    plt.show()

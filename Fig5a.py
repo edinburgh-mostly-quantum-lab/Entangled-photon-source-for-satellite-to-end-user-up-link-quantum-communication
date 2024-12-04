@@ -51,11 +51,11 @@ if __name__ == '__main__':
     ax.set_xlabel('Time (s)',fontsize=10)
     ax.set_ylabel('Secret key rate (bits/s)',fontsize=10)#,color='blue')
     plt.tight_layout()
-    plt.show()
     plt.savefig(
         f'{__file__.split('.')[0]}.png',
         dpi='figure',
         bbox_inches='tight'
     )
+    plt.show()
 
 

@@ -33,16 +33,6 @@
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": "python3 -m venv .venv && .venv/bin/pip install -r requirements.txt",
 
-	// for running with podman
-	"runArgs": [
-		"--userns=keep-id"
-		],
-	"containerUser": "vscode",
-	"updateRemoteUserUID": true,
-	"containerEnv": {
-		"HOME": "/home/vscode"
-	}
-
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 
