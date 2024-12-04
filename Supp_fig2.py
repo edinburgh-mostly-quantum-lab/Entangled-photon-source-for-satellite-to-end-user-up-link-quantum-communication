@@ -72,4 +72,9 @@ if __name__ == '__main__':
     axqber.yaxis.set_major_formatter(ticker.FormatStrFormatter('%.2f'))
     axqber.set_ylabel('error rate',fontsize=10,color='blue')
     plt.tight_layout()
+    plt.savefig(
+        f'{__file__.split('.')[0]}.png',
+        dpi='figure',
+        bbox_inches='tight'
+    )
     plt.show()
