@@ -26,7 +26,11 @@ def plot_model(params, powers, loss_range,t_delta=0.4e-9,DC_A=200, DC_B=70, t_de
         for loss in losses:
             akr += [setup.custom_performance(tcc=Tcc, B=Brightness*power,eff_A=intrinsic_heralding_1550, eff_B=intrinsic_heralding_780+loss)]
 
+<<<<<<< HEAD
         if DC_B>250:
+=======
+        if DC_B>100:
+>>>>>>> 5e11a7c3d54c5a0454d551fb187c0ab561a0c9af
             ax.plot(losses, akr, '--', c="lightblue")
         else:
             ax.plot(losses, akr, c="lightblue")
@@ -93,21 +97,39 @@ if __name__ == '__main__':
     # the following parameters are the result of matching to datarun_17_07_24
     # params = [1.06439023e+00, 7.24172674e-01, 7.13564918e+00, 7.92265295e+00, 5.00000000e-02, 6.00000000e-02]
     params = [9.47893858965945,9.89101987420694, 0.037228590019520497, 0.03834132110856429, 10135831.8248959305, 1e-09]
+<<<<<<< HEAD
     params = [-10*np.log10(0.2063), -10*np.log10(0.158), 0.039, 0.017, 3826895.017621633, 4e-10]
     powers, loss_range = plot_data(run_name, DC_label=250, correction=0)
     plot_model(params, powers, loss_range,t_delta=0.4e-9,DC_A=200, DC_B=250)
+=======
+    powers, loss_range = plot_data(run_name, DC_label=70, correction=0)
+    plot_model(params, powers, loss_range,t_delta=0.4e-9,DC_A=200, DC_B=70)
+>>>>>>> 5e11a7c3d54c5a0454d551fb187c0ab561a0c9af
 
     # increased DC
     run_name = 'datarun_18_07_24_highDC'
     # the following parameters are the result of matching to datarun_18_07_24_highDC
     # params = [0.86439023e+00, 7.24172674e-01, 8.13564918e+00, 7.92265295e+00, 5.00000000e-02, 6.00000000e-02]
     params = [11.47893858965945,9.89101987420694, 0.037228590019520497, 0.03834132110856429, 10135831.8248959305, 1e-09]
+<<<<<<< HEAD
     params = [-10*np.log10(0.2063)+1, -10*np.log10(0.158)+1, 0.039, 0.017, 3826895.017621633, 4e-10]
     powers, loss_range = plot_data(run_name, DC_label=1400, correction=0)
     plot_model(params, powers, loss_range,t_delta=0.4e-9,DC_A=200, DC_B=1400, t_dead_A=25e-9, t_dead_B=45e-9)
+=======
+    powers, loss_range = plot_data(run_name, DC_label=700, correction=0)
+    plot_model(params, powers, loss_range,t_delta=0.4e-9,DC_A=200, DC_B=700, t_dead_A=25e-9, t_dead_B=45e-9)
+>>>>>>> 5e11a7c3d54c5a0454d551fb187c0ab561a0c9af
 
     ax.set_yscale('log')
     ax.legend(fontsize=10, loc=(0.015,0.03), frameon=False)
     ax.set_xlabel('Loss (dB)',fontsize=10)
     ax.set_ylabel('SKR (bits/s)',fontsize=10)
+<<<<<<< HEAD
+=======
+    plt.savefig(
+        f'{__file__.split('.')[0]}.png',
+        dpi='figure',
+        bbox_inches='tight'
+    )
+>>>>>>> 5e11a7c3d54c5a0454d551fb187c0ab561a0c9af
     plt.show()

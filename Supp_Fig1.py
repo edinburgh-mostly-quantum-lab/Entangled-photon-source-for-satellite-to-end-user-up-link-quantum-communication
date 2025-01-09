@@ -38,6 +38,11 @@ if __name__ == '__main__':
     params = [7.761328918344407, 7.542259886343475, 0.0335677812551474, 0.02531375770896907, 10826895.017621633, 4e-10]
     plot_model(params, fibre_range, loss_range,t_delta=0.5e-9,DC_A=200, DC_B=120, t_dead_A=25e-9, t_dead_B=45e-9)
     plot_model(params, fibre_range, loss_range,t_delta=0.5e-9,DC_A=200, DC_B=120, t_dead_A=25e-9, t_dead_B=45e-9,dispersion=40e-12)
+    plt.savefig(
+        f'{__file__.split('.')[0]}.png',
+        dpi='figure',
+        bbox_inches='tight'
+    )
     plt.show()
 
     

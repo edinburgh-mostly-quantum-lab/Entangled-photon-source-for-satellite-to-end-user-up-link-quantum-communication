@@ -30,6 +30,11 @@ def plot_data(file_name):
     fig.colorbar(t)
     plot_area.set_ylabel('Power (mW)',fontsize=10)
     plot_area.set_xlabel('Loss (dB)',fontsize=10)
+    fig.savefig(
+        f'{__file__.split('.')[0]}.png',
+        dpi='figure',
+        bbox_inches='tight'
+    )
 
 if __name__ == '__main__':
     fig = plt.figure(figsize=(3.5, 1.8))
