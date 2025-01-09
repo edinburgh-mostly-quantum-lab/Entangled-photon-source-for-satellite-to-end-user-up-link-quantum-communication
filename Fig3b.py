@@ -9,33 +9,24 @@ from collections import defaultdict
 plt.rc('text', usetex=True)
 plt.rc('font', family='times', size=10)
 
+def h(x):
+    return -x*np.log2(x)-(1-x)*np.log2(1-x)
 
-
-def plot_model(params, powers, loss_range,t_delta=0.5e-9,DC_A=100, DC_B=80, t_dead_A=25e-9, t_dead_B=45e-9):
+def plot_model(params, powers, loss_range,t_delta=0.4e-9,DC_A=200, DC_B=70, t_dead_A=25e-9, t_dead_B=45e-9):
     """This function plots the secure key rate as a function of the fibre distance and free space loss, 
     based on the model in 10.1103/PhysRevA.104.022406, implemented in the neumann_rates.py file."""
-    Brightness, t_delta,intrinsic_heralding_1550, intrinsic_heralding_780,bit_err, phase_err= params
-    t_delta*=1e-9
-    Brightness*=1e7
-    setup = secure_key_rates(d=4, t_delta=t_delta, DC_A=DC_A, DC_B=DC_B, e_b=bit_err, e_p=phase_err, t_dead_A=t_dead_A, t_dead_B=t_dead_B, loss_format='dB', custom=True)
+    intrinsic_heralding_1550, intrinsic_heralding_780, qber, qx, Brightness, Tcc = params
+    # Brightness, t_delta,intrinsic_heralding_1550, intrinsic_heralding_780,bit_err, phase_err= params
+    setup = secure_key_rates(d=4, t_delta=t_delta, DC_A=DC_A, DC_B=DC_B, e_b=qber, e_p=qx, t_dead_A=t_dead_A, t_dead_B=t_dead_B, loss_format='dB', custom=True)
     losses = np.linspace(np.min(loss_range),np.max(loss_range),200)
 
     for power in powers:
         if  not power in [2.5]: continue
         akr = []
-        meas_cc = []
-        heralding = []
-        qber = []
-        qx = [] 
         for loss in losses:
-            akr += [setup.custom_performance(tcc=0.5e-9, B=Brightness*power,eff_A=intrinsic_heralding_1550, eff_B=intrinsic_heralding_780+loss)]
-            x = [0.5e-9,Brightness*power]
-            meas_cc += [setup.__coincidences_measured__(x)]
-            heralding += [setup.__heralding__(x)]
-            qber += [setup.__coincidences_erroneous__(x, setup.bit_error) / meas_cc[-1]]
-            qx += [setup.__coincidences_erroneous__(x, setup.phase_error) / meas_cc[-1]]
-        
-        if DC_B>100:
+            akr += [setup.custom_performance(tcc=Tcc, B=Brightness*power,eff_A=intrinsic_heralding_1550, eff_B=intrinsic_heralding_780+loss)]
+
+        if DC_B>250:
             ax.plot(losses, akr, '--', c="lightblue")
         else:
             ax.plot(losses, akr, c="lightblue")
@@ -86,11 +77,11 @@ def plot_data(file_name, DC_label, correction):
         losses[power] = np.array(losses[power])[np.argsort(losses[power])]
         color=next(color_gen_data)
         # ax.errorbar(losses[power], rates[power], yerr=[np.clip(rates[power]-undererror[power],0,None),np.clip(overerror[power]-rates[power],0,None)],linestyle='',marker='o', label=f"{power} mW, {DC_label} DC/s", color=color)
-        if DC_label>100:
-            ax.scatter(losses[power], rates[power],s=10,label=f"$\sim$ {DC_label} DC/s", color=color,marker="^")
+        if DC_label>250:
+            ax.scatter(losses[power], rates[power],s=10, edgecolors='black',linewidths=1/2, label=f"$\sim$ {DC_label} DC/s", color=color,marker="^",zorder=1000)
         
         else:
-            ax.scatter(losses[power], rates[power],s=10,label=f"$\sim$ {DC_label} DC/s", color=color)
+            ax.scatter(losses[power], rates[power],s=10, edgecolors='black',linewidths=1/2,label=f"$\sim$ {DC_label} DC/s", color=color,zorder=1000)
         loss_range[0] = min(losses[power][0],loss_range[0])
         loss_range[1] = max(losses[power][-1],loss_range[1])
     return np.sort(list(rates.keys())), loss_range
@@ -100,21 +91,23 @@ if __name__ == '__main__':
     ax = fig.add_axes([0, 0, 1, 1])
     run_name = 'datarun_17_07_24'
     # the following parameters are the result of matching to datarun_17_07_24
-    params = [1.06439023e+00, 7.24172674e-01, 7.13564918e+00, 7.92265295e+00, 5.00000000e-02, 6.00000000e-02]
-    powers, loss_range = plot_data(run_name, DC_label=100, correction=0)
-    plot_model(params, powers, loss_range,t_delta=0.5e-9,DC_A=300, DC_B=100, t_dead_A=25e-9, t_dead_B=45e-9)
+    # params = [1.06439023e+00, 7.24172674e-01, 7.13564918e+00, 7.92265295e+00, 5.00000000e-02, 6.00000000e-02]
+    params = [9.47893858965945,9.89101987420694, 0.037228590019520497, 0.03834132110856429, 10135831.8248959305, 1e-09]
+    params = [-10*np.log10(0.2063), -10*np.log10(0.158), 0.039, 0.017, 3826895.017621633, 4e-10]
+    powers, loss_range = plot_data(run_name, DC_label=250, correction=0)
+    plot_model(params, powers, loss_range,t_delta=0.4e-9,DC_A=200, DC_B=250)
 
     # increased DC
     run_name = 'datarun_18_07_24_highDC'
     # the following parameters are the result of matching to datarun_18_07_24_highDC
-    params = [0.86439023e+00, 7.24172674e-01, 8.13564918e+00, 7.92265295e+00, 5.00000000e-02, 6.00000000e-02]
-    powers, loss_range = plot_data(run_name, DC_label=1000, correction=0)
-    plot_model(params, powers, loss_range,t_delta=0.5e-9,DC_A=300, DC_B=1000, t_dead_A=25e-9, t_dead_B=45e-9)
+    # params = [0.86439023e+00, 7.24172674e-01, 8.13564918e+00, 7.92265295e+00, 5.00000000e-02, 6.00000000e-02]
+    params = [11.47893858965945,9.89101987420694, 0.037228590019520497, 0.03834132110856429, 10135831.8248959305, 1e-09]
+    params = [-10*np.log10(0.2063)+1, -10*np.log10(0.158)+1, 0.039, 0.017, 3826895.017621633, 4e-10]
+    powers, loss_range = plot_data(run_name, DC_label=1400, correction=0)
+    plot_model(params, powers, loss_range,t_delta=0.4e-9,DC_A=200, DC_B=1400, t_dead_A=25e-9, t_dead_B=45e-9)
 
     ax.set_yscale('log')
     ax.legend(fontsize=10, loc=(0.015,0.03), frameon=False)
     ax.set_xlabel('Loss (dB)',fontsize=10)
     ax.set_ylabel('SKR (bits/s)',fontsize=10)
-    # plt.tight_layout()
     plt.show()
-
