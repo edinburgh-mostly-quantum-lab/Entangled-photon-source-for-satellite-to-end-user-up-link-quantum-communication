@@ -35,6 +35,7 @@ def plot_data(file_name):
         dpi='figure',
         bbox_inches='tight'
     )
+    plt.show()
 
 if __name__ == '__main__':
     fig = plt.figure(figsize=(3.5, 1.8))

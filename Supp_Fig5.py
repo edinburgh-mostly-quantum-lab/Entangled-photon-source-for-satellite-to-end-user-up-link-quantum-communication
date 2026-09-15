@@ -48,6 +48,11 @@ our_trace = np.array(our_trace)
 # ax.plot3D(*our_trace.T,c="grey")
 ax.scatter(*our_trace.T,c="black",depthshade=False)
 ax.set_box_aspect(aspect=None, zoom=0.8)
-ax.view_init(30, -27) 
+ax.view_init(30, -27)
+plt.savefig(
+    f'{__file__.split('.')[0]}.png',
+    dpi='figure',
+    bbox_inches='tight'
+)
 plt.show()
-fig.savefig("FIG6.pdf",dpi=1000,bbox_inches="tight",transparent=True)
+# fig.savefig("FIG6.pdf",dpi=1000,bbox_inches="tight",transparent=True)
